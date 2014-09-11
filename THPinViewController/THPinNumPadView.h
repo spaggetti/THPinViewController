@@ -20,7 +20,7 @@
 @interface THPinNumPadView : UIView
 
 @property (nonatomic, weak) id<THPinNumPadViewDelegate> delegate;
-@property (nonatomic, assign) BOOL hideLetters;
+@property (nonatomic, assign) BOOL showLetters;
 
 - (instancetype)initWithDelegate:(id<THPinNumPadViewDelegate>)delegate;
 

@@ -35,7 +35,7 @@
     {
         _hPadding = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 24.0f : 20.0f;
         _vPadding = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 19.0f : 13.0f;
-        
+        _showLetters = YES;
         [self setupViews];
     }
     return self;
@@ -45,10 +45,10 @@
 {
     // remove existing views
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
+
     NSMutableString *vFormat = [NSMutableString stringWithString:@"V:|"];
     NSMutableDictionary *rowViews = [NSMutableDictionary dictionary];
-    
+
     for (NSUInteger row = 0; row < 4; row++)
     {
         UIView *rowView = [[UIView alloc] init];
@@ -58,24 +58,24 @@
                                                          relatedBy:NSLayoutRelationEqual
                                                             toItem:self attribute:NSLayoutAttributeCenterX
                                                         multiplier:1.0f constant:0.0f]];
-        
+
         NSString *rowName = [NSString stringWithFormat:@"row%lu", (unsigned long)row];
         if (row > 0) {
             [vFormat appendString:@"-(vPadding)-"];
         }
         [vFormat appendFormat:@"[%@(==rowHeight)]", rowName];
         rowViews[rowName] = rowView;
-        
+
         NSMutableString *hFormat = [NSMutableString stringWithString:@"H:|"];
         NSMutableDictionary *buttonViews = [NSMutableDictionary dictionary];
-        
+
         for (NSUInteger col = 0; col < 3; col++)
         {
             if (row == 3 && col != 1) {
                 // only one button on last row
                 continue;
             }
-            
+
             NSUInteger number = (row < 3) ? row * 3 + col + 1 : 0;
             THPinNumButton *button = [[THPinNumButton alloc] initWithNumber:number
                                                                     letters:[self lettersForRow:row column:col]];
@@ -83,11 +83,11 @@
             button.backgroundColor = self.backgroundColor;
             [button addTarget:self action:@selector(numberButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
             [rowView addSubview:button];
-            
+
             NSString *buttonName = [NSString stringWithFormat:@"button%lu%lu", (unsigned long)row, (unsigned long)col];
             [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[%@]|", buttonName]
                                                                             options:0 metrics:nil views:@{ buttonName : button }]];
-            
+
             if (row < 3) {
                 if ([buttonViews count] > 0) {
                     [hFormat appendString:@"-(hPadding)-"];
@@ -98,12 +98,12 @@
             }
             buttonViews[buttonName] = button;
         }
-        
+
         [hFormat appendString:@"|"];
         NSDictionary *metrics = @{ @"hPadding" : @(_hPadding) };
         [rowView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:hFormat options:0 metrics:metrics views:buttonViews]];
     }
-    
+
     [vFormat appendString:@"|"];
     NSDictionary *metrics = @{ @"rowHeight" : @([THPinNumButton diameter]),
                                @"vPadding" : @(_vPadding) };
@@ -112,46 +112,45 @@
 
 - (NSString *)lettersForRow:(NSUInteger)row column:(NSUInteger)col
 {
-    if (self.hideLetters) {
-        return nil;
-    }
-    
-    switch (row)
-    {
-        case 0:
+    if (_showLetters) {
+
+        switch (row)
         {
-            switch (col)
+            case 0:
             {
-                case 0:
-                    return @" "; // empty string to trigger shifted number position
-                case 1:
-                    return @"ABC";
-                case 2:
-                    return @"DEF";
+                switch (col)
+                {
+                    case 0:
+                        return @" "; // empty string to trigger shifted number position
+                    case 1:
+                        return @"ABC";
+                    case 2:
+                        return @"DEF";
+                }
             }
-        }
-        case 1:
-        {
-            switch (col)
+            case 1:
             {
-                case 0:
-                    return @"GHI";
-                case 1:
-                    return @"JKL";
-                case 2:
-                    return @"MNO";
+                switch (col)
+                {
+                    case 0:
+                        return @"GHI";
+                    case 1:
+                        return @"JKL";
+                    case 2:
+                        return @"MNO";
+                }
             }
-        }
-        case 2:
-        {
-            switch (col)
+            case 2:
             {
-                case 0:
-                    return @"PQRS";
-                case 1:
-                    return @"TUV";
-                case 2:
-                    return @"WXYZ";
+                switch (col)
+                {
+                    case 0:
+                        return @"PQRS";
+                    case 1:
+                        return @"TUV";
+                    case 2:
+                        return @"WXYZ";
+                }
             }
         }
     }
@@ -174,12 +173,12 @@
     }
 }
 
-- (void)setHideLetters:(BOOL)hideLetters
+-(void)setShowLetters:(BOOL)showLetters
 {
-    if (self.hideLetters == hideLetters) {
+    if (_showLetters == showLetters) {
         return;
     }
-    _hideLetters = hideLetters;
+    _showLetters = showLetters;
     [self setupViews];
 }
 

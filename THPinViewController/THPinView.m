@@ -166,22 +166,22 @@
     self.promptLabel.textColor = promptColor;
 }
 
-- (BOOL)hideLetters
+-(BOOL)showLetters
 {
-    return self.numPadView.hideLetters;
+    return self.numPadView.showLetters;
 }
 
-- (void)setHideLetters:(BOOL)hideLetters
+-(void)setShowLetters:(BOOL)showLetters
 {
-    self.numPadView.hideLetters = hideLetters;
+    self.numPadView.showLetters = showLetters;
 }
 
-- (void)setDisableCancel:(BOOL)disableCancel
+-(void)setShowCancelButton:(BOOL)showCancelButton
 {
-    if (self.disableCancel == disableCancel) {
+    if (_showCancelButton == showCancelButton) {
         return;
     }
-    _disableCancel = disableCancel;
+    _showCancelButton = showCancelButton;
     [self updateBottomButton];
 }
 
@@ -190,7 +190,7 @@
 - (void)updateBottomButton
 {
     if ([self.input length] == 0) {
-        self.bottomButton.hidden = self.disableCancel;
+        self.bottomButton.hidden = !_showCancelButton;
         [self.bottomButton setTitle:NSLocalizedStringFromTable(@"cancel_button_title", @"THPinViewController", nil)
                            forState:UIControlStateNormal];
         [self.bottomButton removeTarget:self action:@selector(delete:) forControlEvents:UIControlEventTouchUpInside];

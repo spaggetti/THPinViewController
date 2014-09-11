@@ -47,8 +47,8 @@
     self.pinView.backgroundColor = self.view.backgroundColor;
     self.pinView.promptTitle = self.promptTitle;
     self.pinView.promptColor = self.promptColor;
-    self.pinView.hideLetters = self.hideLetters;
-    self.pinView.disableCancel = self.disableCancel;
+    self.pinView.showLetters = self.showLetters;
+    self.pinView.showCancelButton = self.showCancelButton;
     self.pinView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.pinView];
     // center pin view
@@ -122,22 +122,22 @@
     self.pinView.promptColor = self.promptColor;
 }
 
-- (void)setHideLetters:(BOOL)hideLetters
+-(void)setShowLetters:(BOOL)showLetters
 {
-    if (self.hideLetters == hideLetters) {
+    if (_showLetters == showLetters) {
         return;
     }
-    _hideLetters = hideLetters;
-    self.pinView.hideLetters = self.hideLetters;
+    _showLetters = showLetters;
+    self.pinView.showLetters = _showLetters;
 }
 
-- (void)setDisableCancel:(BOOL)disableCancel
+-(void)setShowCancelButton:(BOOL)showCancelButton
 {
-    if (self.disableCancel == disableCancel) {
+    if (_showCancelButton == showCancelButton) {
         return;
     }
-    _disableCancel = disableCancel;
-    self.pinView.disableCancel = self.disableCancel;
+    _showCancelButton = showCancelButton;
+    self.pinView.showCancelButton = _showCancelButton;
 }
 
 #pragma mark - Blur
@@ -195,26 +195,39 @@
 
 - (void)cancelButtonTappedInPinView:(THPinView *)pinView
 {
-    if ([self.delegate respondsToSelector:@selector(pinViewControllerWillDismissAfterPinEntryWasCancelled:)]) {
-        [self.delegate pinViewControllerWillDismissAfterPinEntryWasCancelled:self];
+    BOOL dismiss = YES;
+    if ([self.delegate respondsToSelector:@selector(pinViewControllerShouldDismissAfterPinEntryWasCancelled:)]) {
+        dismiss = [self.delegate pinViewControllerShouldDismissAfterPinEntryWasCancelled:self];
     }
-    [self dismissViewControllerAnimated:YES completion:^{
-        if ([self.delegate respondsToSelector:@selector(pinViewControllerDidDismissAfterPinEntryWasCancelled:)]) {
-            [self.delegate pinViewControllerDidDismissAfterPinEntryWasCancelled:self];
+    if (dismiss)
+    {
+        if ([self.delegate respondsToSelector:@selector(pinViewControllerWillDismissAfterPinEntryWasCancelled:)]) {
+            [self.delegate pinViewControllerWillDismissAfterPinEntryWasCancelled:self];
         }
-    }];
+        [self dismissViewControllerAnimated:YES completion:^{
+            if ([self.delegate respondsToSelector:@selector(pinViewControllerDidDismissAfterPinEntryWasCancelled:)]) {
+                [self.delegate pinViewControllerDidDismissAfterPinEntryWasCancelled:self];
+            }
+        }];
+    }
 }
 
 - (void)correctPinWasEnteredInPinView:(THPinView *)pinView
 {
-    if ([self.delegate respondsToSelector:@selector(pinViewControllerWillDismissAfterPinEntryWasSuccessful:)]) {
-        [self.delegate pinViewControllerWillDismissAfterPinEntryWasSuccessful:self];
+    BOOL dismiss = YES;
+    if ([self.delegate respondsToSelector:@selector(pinViewControllerShouldDismissAfterPinEntryWasSuccessful:)]) {
+        dismiss = [self.delegate pinViewControllerShouldDismissAfterPinEntryWasSuccessful:self];
     }
-    [self dismissViewControllerAnimated:YES completion:^{
-        if ([self.delegate respondsToSelector:@selector(pinViewControllerDidDismissAfterPinEntryWasSuccessful:)]) {
-            [self.delegate pinViewControllerDidDismissAfterPinEntryWasSuccessful:self];
+    if (dismiss) {
+        if ([self.delegate respondsToSelector:@selector(pinViewControllerWillDismissAfterPinEntryWasSuccessful:)]) {
+            [self.delegate pinViewControllerWillDismissAfterPinEntryWasSuccessful:self];
         }
-    }];
+        [self dismissViewControllerAnimated:YES completion:^{
+            if ([self.delegate respondsToSelector:@selector(pinViewControllerDidDismissAfterPinEntryWasSuccessful:)]) {
+                [self.delegate pinViewControllerDidDismissAfterPinEntryWasSuccessful:self];
+            }
+        }];
+    }
 }
 
 - (void)incorrectPinWasEnteredInPinView:(THPinView *)pinView
@@ -224,14 +237,20 @@
             [self.delegate incorrectPinEnteredInPinViewController:self];
         }
     } else {
-        if ([self.delegate respondsToSelector:@selector(pinViewControllerWillDismissAfterPinEntryWasUnsuccessful:)]) {
-            [self.delegate pinViewControllerWillDismissAfterPinEntryWasUnsuccessful:self];
+        BOOL dismiss = YES;
+        if ([self.delegate respondsToSelector:@selector(pinViewControllerShouldDismissAfterPinEntryWasUnsuccessful:)]) {
+            dismiss = [self.delegate pinViewControllerShouldDismissAfterPinEntryWasUnsuccessful:self];
         }
-        [self dismissViewControllerAnimated:YES completion:^{
-            if ([self.delegate respondsToSelector:@selector(pinViewControllerDidDismissAfterPinEntryWasUnsuccessful:)]) {
-                [self.delegate pinViewControllerDidDismissAfterPinEntryWasUnsuccessful:self];
+        if (dismiss) {
+            if ([self.delegate respondsToSelector:@selector(pinViewControllerWillDismissAfterPinEntryWasUnsuccessful:)]) {
+                [self.delegate pinViewControllerWillDismissAfterPinEntryWasUnsuccessful:self];
             }
-        }];
+            [self dismissViewControllerAnimated:YES completion:^{
+                if ([self.delegate respondsToSelector:@selector(pinViewControllerDidDismissAfterPinEntryWasUnsuccessful:)]) {
+                    [self.delegate pinViewControllerDidDismissAfterPinEntryWasUnsuccessful:self];
+                }
+            }];
+        }
     }
 }
 

@@ -23,10 +23,16 @@ static const NSInteger THPinViewControllerContentViewTag = 14742;
 
 @optional
 - (void)incorrectPinEnteredInPinViewController:(THPinViewController *)pinViewController;
+
+- (BOOL)pinViewControllerShouldDismissAfterPinEntryWasSuccessful:(THPinViewController *)pinViewController;
 - (void)pinViewControllerWillDismissAfterPinEntryWasSuccessful:(THPinViewController *)pinViewController;
 - (void)pinViewControllerDidDismissAfterPinEntryWasSuccessful:(THPinViewController *)pinViewController;
+
+- (BOOL)pinViewControllerShouldDismissAfterPinEntryWasUnsuccessful:(THPinViewController *)pinViewController;
 - (void)pinViewControllerWillDismissAfterPinEntryWasUnsuccessful:(THPinViewController *)pinViewController;
 - (void)pinViewControllerDidDismissAfterPinEntryWasUnsuccessful:(THPinViewController *)pinViewController;
+
+- (BOOL)pinViewControllerShouldDismissAfterPinEntryWasCancelled:(THPinViewController *)pinViewController;
 - (void)pinViewControllerWillDismissAfterPinEntryWasCancelled:(THPinViewController *)pinViewController;
 - (void)pinViewControllerDidDismissAfterPinEntryWasCancelled:(THPinViewController *)pinViewController;
 
@@ -39,8 +45,8 @@ static const NSInteger THPinViewControllerContentViewTag = 14742;
 @property (nonatomic, assign) BOOL translucentBackground;
 @property (nonatomic, copy) NSString *promptTitle;
 @property (nonatomic, strong) UIColor *promptColor;
-@property (nonatomic, assign) BOOL hideLetters; // hides the letters on the number buttons
-@property (nonatomic, assign) BOOL disableCancel; // hides the cancel button
+@property (nonatomic, assign) BOOL showLetters;
+@property (nonatomic, assign) BOOL showCancelButton;
 
 - (instancetype)initWithDelegate:(id<THPinViewControllerDelegate>)delegate NS_DESIGNATED_INITIALIZER;
 
