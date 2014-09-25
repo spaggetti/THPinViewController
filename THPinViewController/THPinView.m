@@ -191,13 +191,13 @@
 {
     if ([self.input length] == 0) {
         self.bottomButton.hidden = !_showCancelButton;
-        [self.bottomButton setTitle:NSLocalizedStringFromTable(@"cancel_button_title", @"THPinViewController", nil)
+        [self.bottomButton setTitle:@""
                            forState:UIControlStateNormal];
         [self.bottomButton removeTarget:self action:@selector(delete:) forControlEvents:UIControlEventTouchUpInside];
         [self.bottomButton addTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
     } else {
         self.bottomButton.hidden = NO;
-        [self.bottomButton setTitle:NSLocalizedStringFromTable(@"delete_button_title", @"THPinViewController", nil)
+        [self.bottomButton setTitle:@"Delete"
                            forState:UIControlStateNormal];
         [self.bottomButton removeTarget:self action:@selector(cancel:) forControlEvents:UIControlEventTouchUpInside];
         [self.bottomButton addTarget:self action:@selector(delete:) forControlEvents:UIControlEventTouchUpInside];
